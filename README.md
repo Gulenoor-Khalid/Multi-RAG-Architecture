@@ -63,7 +63,7 @@ Dự án **RAG Multi-LLM System** được xây dựng nhằm mục tiêu:
 ### 📦 Các Docker Containers đang chạy
 
 <p align="center">
-  <img src="docker_container.png" width="90%" alt="Docker Containers">
+  <img src="image/docker_container.png" width="90%" alt="Docker Containers">
 </p>
 
 <sub align="center">
@@ -77,7 +77,7 @@ Danh sách các container: frontend, backend (FastAPI), vector database
 #### 🔹 Docker Image – Frontend
 
 <p align="center">
-  <img src="docker_image_frontend.png" width="80%" alt="Docker Image Frontend">
+  <img src="image/docker_image_frontend.png" width="80%" alt="Docker Image Frontend">
 </p>
 
 <sub align="center">
@@ -87,7 +87,7 @@ Image cho giao diện Web UI (HTML / CSS / JavaScript + Nginx)
 #### 🔹 Docker Image – Backend
 
 <p align="center">
-  <img src="docker_image_backend.png" width="80%" alt="Docker Image Backend">
+  <img src="image/docker_image_backend.png" width="80%" alt="Docker Image Backend">
 </p>
 
 <sub align="center">
@@ -99,7 +99,7 @@ Image cho Backend FastAPI + LLM + RAG Engine
 ### 🌐 Giao diện Web (Web UI)
 
 <p align="center">
-  <img src="frontend.png" width="90%" alt="Web UI Chat">
+  <img src="image/frontend.png" width="90%" alt="Web UI Chat">
 </p>
 
 <sub align="center">
