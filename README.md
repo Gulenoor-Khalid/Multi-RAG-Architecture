@@ -106,6 +106,16 @@ Image cho Backend FastAPI + LLM + RAG Engine
 Giao diện chat RAG: upload tài liệu, chọn mô hình, streaming câu trả lời
 </sub>
 
+**Demo Run**
+
+<p align="center">
+  <img src="image/demo_run_rag.png" width="90%" alt="Demo Run RAG">
+</p>
+
+<sub align="center">
+Ảnh minh họa quá trình chạy RAG (upload tài liệu và phản hồi từ model).
+</sub>
+
 ---
 
 ## ✨ Tính năng
@@ -407,9 +417,28 @@ MIT License
 
 ## 🔗 GitHub của tác giả
 
-<p align="center">
-  <img src="https://avatars.githubusercontent.com/u/113317514?v=4" width="100" alt="Kietnehi Avatar"/>
+---
+
+<div align="center">
+
+## 👨‍💻 Thông tin Tác giả
+
+<img src="https://github.com/Kietnehi.png" width="130" height="130" style="border-radius: 50%; border: 3px solid #61dafb;" alt="Avatar Trương Phú Kiệt">
+
+<br/>
+<a href="https://github.com/Kietnehi">
+  <img src="https://readme-typing-svg.herokuapp.com?font=Fira+Code&pause=1000&color=3590F3&center=true&vCenter=true&width=435&lines=Hi,+I'm+Truong+Phu+Kiet;Student+at+Sai+Gon+University;Fullstack+Developer+%26+AI+Enthusiast" alt="Typing SVG" />
+</a>
+
+<p>
+  <img src="https://img.shields.io/badge/University-Sai_Gon_University-blue?style=for-the-badge&logo=google-scholar&logoColor=white" alt="SGU">
+  <img src="https://img.shields.io/badge/Location-Ho_Chi_Minh_City-red?style=for-the-badge&logo=google-maps&logoColor=white" alt="HCMC">
 </p>
+
+<p>
+ <i>"Đam mê công nghệ, yêu thích xây dựng các ứng dụng thực tế với Docker & AI."</i>
+</p>
+<div align="center">
 
 <p align="center">
   <a href="https://github.com/Kietnehi">
@@ -423,4 +452,3 @@ MIT License
 <p align="center">
   Truy cập <a href="https://github.com/Kietnehi">GitHub của tôi</a> để xem các dự án khác và nhấn <b>Follow</b>!
 </p>
-

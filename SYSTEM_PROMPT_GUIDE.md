@@ -187,7 +187,8 @@ Quy tắc:
 
 Chúc bạn thành công! 🎉
 cd "c:\Users\ADMIN\Desktop\RAG MINI\backend" && python -m uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
-cd "c:\Users\ADMIN\Desktop\RAG MINI\frontend" && python -m http.server 3000
+cd "c:\Users\ADMIN\Desktop\RAG MINI\frontend" && python -m http.server 3000 --reload
+
 
 
 

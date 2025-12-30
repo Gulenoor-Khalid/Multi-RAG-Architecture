@@ -50,10 +50,10 @@ class QueryResponse(BaseModel):
 async def startup_event():
     """Khởi tạo model khi start app"""
     print("🚀 Starting RAG Multi-LLM API...")
-    # Skip auto-loading model for faster startup
-    # Model will be loaded on first request or manually via /models/load
-    print("⏭️ Skipping auto-load model (load on demand)")
-    print("✅ Backend ready! Load model via UI or call /models/load")
+    # Auto-load default model (có thể mất 1-2 phút)
+    # Nếu muốn start nhanh hơn, comment dòng dưới và load model qua UI
+    await llm_manager.load_default_model()
+    print("✅ Model loaded successfully!")
 
 @app.get("/")
 async def root():
@@ -142,6 +142,13 @@ async def upload_document(file: UploadFile = File(...)):
 async def query(request: QueryRequest):
     """Query với RAG"""
     try:
+        # Kiểm tra model đã load chưa
+        if not llm_manager.is_model_loaded():
+            raise HTTPException(
+                status_code=400, 
+                detail="Model not loaded. Please load a model first via 'Load Model' button."
+            )
+        
         # Lấy relevant documents nếu dùng RAG
         sources = []
         context = ""
@@ -164,13 +171,25 @@ async def query(request: QueryRequest):
             model_used=llm_manager.current_model_name,
             sources=sources if request.use_rag else None
         )
+    except HTTPException:
+        raise
     except Exception as e:
+        print(f"❌ Error in query: {str(e)}")
+        import traceback
+        traceback.print_exc()
         raise HTTPException(status_code=500, detail=str(e))
 
 @app.post("/query/stream")
 async def query_stream(request: QueryRequest):
     """Query với streaming response"""
     try:
+        # Kiểm tra model đã load chưa
+        if not llm_manager.is_model_loaded():
+            raise HTTPException(
+                status_code=400, 
+                detail="Model not loaded. Please load a model first via 'Load Model' button."
+            )
+        
         sources = []
         context = ""
         
