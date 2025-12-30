@@ -50,8 +50,10 @@ class QueryResponse(BaseModel):
 async def startup_event():
     """Khởi tạo model khi start app"""
     print("🚀 Starting RAG Multi-LLM API...")
-    await llm_manager.load_default_model()
-    print("✅ Model loaded successfully!")
+    # Skip auto-loading model for faster startup
+    # Model will be loaded on first request or manually via /models/load
+    print("⏭️ Skipping auto-load model (load on demand)")
+    print("✅ Backend ready! Load model via UI or call /models/load")
 
 @app.get("/")
 async def root():

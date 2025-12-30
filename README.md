@@ -369,10 +369,9 @@ docker-compose up --build
 2. **Quantization**: Giảm VRAM, tăng tốc độ
 3. **Cache models**: Models được cache sau lần đầu
 4. **Chunking**: Adjust `CHUNK_SIZE` phù hợp với documents
-
 ## 📝 TODO / Improvements
 
-- [ ] Thêm authentication
+- [ ] Thêm **authentication**
 - [ ] Multi-user support
 - [ ] Conversation history
 - [ ] Advanced RAG strategies (HyDE, Multi-query)
@@ -380,23 +379,48 @@ docker-compose up --build
 - [ ] Export chat history
 - [ ] Support thêm file formats (CSV, Excel, etc.)
 
+---
+
 ## 🤝 Contributing
 
-Contributions are welcome! Vui lòng tạo issue hoặc pull request.
+Chúng tôi hoan nghênh mọi đóng góp!  
+Vui lòng tạo **issue** hoặc **pull request** trên GitHub.
+
+---
 
 ## 📄 License
 
 MIT License
 
-## 🙏 Credits
-
-- FastAPI
-- Transformers (HuggingFace)
-- LangChain
-- ChromaDB
-- bitsandbytes (quantization)
-
 ---
 
-**Note**: Project này dùng cho educational purposes. Một số models yêu cầu token từ HuggingFace hoặc acceptance của license.
-# RAG
+## 🙏 Credits
+
+- FastAPI  
+- Transformers (HuggingFace)  
+- LangChain  
+- ChromaDB  
+- bitsandbytes (quantization)  
+
+> **Lưu ý**: Project dùng cho **educational purposes**. Một số models yêu cầu token từ HuggingFace hoặc tuân thủ license riêng.
+---
+
+## 🔗 GitHub của tác giả
+
+<p align="center">
+  <img src="https://avatars.githubusercontent.com/u/113317514?v=4" width="100" alt="Kietnehi Avatar"/>
+</p>
+
+<p align="center">
+  <a href="https://github.com/Kietnehi">
+    <img src="https://img.shields.io/github/followers/Kietnehi?label=Follow&style=social" alt="Follow"/>
+    <img src="https://img.shields.io/github/stars/Kietnehi/RAG?style=social" alt="Stars"/>
+    <img src="https://img.shields.io/github/forks/Kietnehi/RAG?style=social" alt="Forks"/>
+    <img src="https://img.shields.io/github/issues/Kietnehi/RAG" alt="Issues"/>
+  </a>
+</p>
+
+<p align="center">
+  Truy cập <a href="https://github.com/Kietnehi">GitHub của tôi</a> để xem các dự án khác và nhấn <b>Follow</b>!
+</p>
+
