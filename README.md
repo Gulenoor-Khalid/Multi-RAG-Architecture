@@ -137,9 +137,16 @@ Giao diện chat RAG: upload tài liệu, chọn mô hình, streaming câu trả
   - Sentence transformers cho embeddings
   - Hỗ trợ PDF, DOCX, TXT
 
+- 🖼️ **BLIP - Vision AI cho xử lý hình ảnh**
+  - **Visual Question Answering (VQA)**: Trả lời câu hỏi dựa trên nội dung hình ảnh
+  - **Image Captioning**: Tự động tạo mô tả chi tiết cho hình ảnh
+  - Tích hợp với RAG để kết hợp thông tin từ văn bản và hình ảnh
+  - Upload hình ảnh và chat về nội dung ảnh
+
 - 🎨 **Web Interface hiện đại**
   - Chat interface với streaming
   - Upload và quản lý documents
+  - Upload và xử lý hình ảnh với BLIP
   - Switch giữa các models
   - Điều chỉnh temperature, max tokens
 
@@ -156,8 +163,9 @@ RAG MINI/
 │   └── app/
 │       ├── main.py         # API endpoints
 │       ├── models/
-│       │   ├── llm_manager.py    # Quản lý LLM models
-│       │   └── rag_engine.py     # RAG logic
+│       │   ├── llm_manager.py      # Quản lý LLM models
+│       │   ├── rag_engine.py       # RAG logic
+│       │   └── blip_processor.py   # BLIP Vision AI
 │       └── utils/
 │           └── document_processor.py
 ├── frontend/               # Web UI
@@ -235,23 +243,35 @@ python -m http.server 3000
 3. Click **Upload**
 4. Documents sẽ được xử lý và lưu vào vector database
 
-### 2. Chat với RAG
+### 2. Upload và xử lý hình ảnh với BLIP
+
+1. Click vào **"🖼️ Upload Image"** trong sidebar
+2. Chọn hình ảnh (JPG, PNG)
+3. Chọn chế độ xử lý:
+   - **VQA (Visual Question Answering)**: Hỏi về nội dung hình ảnh
+   - **Caption**: Tự động tạo mô tả hình ảnh
+4. Nhập câu hỏi về hình ảnh (nếu chọn VQA)
+5. Hệ thống sẽ phân tích và trả lời dựa trên hình ảnh
+
+### 3. Chat với RAG
 
 1. Nhập câu hỏi vào chat input
 2. Bật **"Sử dụng RAG"** để query từ documents
 3. Tắt RAG để chat trực tiếp với LLM
-4. Click **Gửi** hoặc nhấn Enter
+4. Kết hợp với hình ảnh đã upload để có câu trả lời đầy đủ hơn
+5. Click **Gửi** hoặc nhấn Enter
 
-### 3. Switch Models
+### 4. Switch Models
 
 1. Chọn model từ dropdown **"Model"**
 2. Click **"Load Model"**
 3. Đợi model load (có thể mất 1-2 phút)
 
-### 4. Điều chỉnh Parameters
+### 5. Điều chỉnh Parameters
 
 - **Temperature**: 0-1 (creativity)
 - **Max Tokens**: 128-2048 (response length)
+- **Image Mode**: VQA hoặc Caption khi upload hình ảnh
 
 ## 🔧 Cấu hình
 
@@ -329,7 +349,14 @@ POST /upload
 Content-Type: multipart/form-data
 ```
 
-### Query (RAG)
+### Upload Image (BLIP)
+```bash
+POST /upload-image
+Content-Type: multipart/form-data
+```
+
+### Query (RAG + BLIP)
+
 ```bash
 POST /query
 Content-Type: application/json
@@ -338,7 +365,9 @@ Content-Type: application/json
   "query": "Your question here",
   "use_rag": true,
   "max_tokens": 512,
-  "temperature": 0.7
+  "temperature": 0.7,
+  "image_base64": "<base64_encoded_image>",  // Optional
+  "image_mode": "vqa"  // "vqa" hoặc "caption"
 }
 ```
 
@@ -416,6 +445,8 @@ MIT License
 - LangChain  
 - ChromaDB  
 - bitsandbytes (quantization)  
+- BLIP (Salesforce) - Vision AI  
+- Pillow - Image processing  
 
 > **Lưu ý**: Project dùng cho **educational purposes**. Một số models yêu cầu token từ HuggingFace hoặc tuân thủ license riêng.
 ---

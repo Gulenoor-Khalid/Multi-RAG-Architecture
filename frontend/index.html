@@ -21,7 +21,6 @@
                 <select id="modelSelect">
                     <option value="">Loading models...</option>
                 </select>
-                <button id="loadModelBtn" class="btn-secondary">Load Model</button>
             </div>
 
             <div class="control-group">
@@ -81,6 +80,23 @@
                     <input type="file" id="fileInput" accept=".pdf,.txt,.docx" multiple>
                     <button id="uploadBtn" class="btn-primary">Upload</button>
                     <div id="uploadStatus" class="status-message"></div>
+                </div>
+
+                <h3 style="margin-top: 20px;">🖼️ Upload Image</h3>
+                <div class="upload-section">
+                    <input type="file" id="imageInput" accept="image/*">
+                    <button id="uploadImageBtn" class="btn-primary">Upload Image</button>
+                    
+                    <div class="control-group" style="margin-top: 10px;">
+                        <label for="imageMode">Image Mode:</label>
+                        <select id="imageMode">
+                            <option value="vqa">Q&A về ảnh</option>
+                            <option value="caption">Mô tả ảnh</option>
+                        </select>
+                    </div>
+                    
+                    <div id="imagePreview" style="display: none; margin-top: 10px; padding: 10px; border: 1px solid #ddd; border-radius: 8px; background: #f9f9f9;"></div>
+                    <button id="clearImageBtn" class="btn-secondary" style="display: none; margin-top: 10px; width: 100%;">Clear Image</button>
                 </div>
 
                 <div class="stats">

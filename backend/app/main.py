@@ -2,7 +2,7 @@ import os
 # Disable ChromaDB telemetry ASAP
 os.environ["ANONYMIZED_TELEMETRY"] = "False"
 
-from fastapi import FastAPI, File, UploadFile, HTTPException, Form
+from fastapi import FastAPI, File, UploadFile, HTTPException, Form, Query
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import StreamingResponse
 from pydantic import BaseModel
@@ -12,6 +12,7 @@ from pathlib import Path
 
 from .models.llm_manager import LLMManager
 from .models.rag_engine import RAGEngine
+from .models.blip_processor import BLIPImageProcessor
 from .utils.document_processor import DocumentProcessor
 
 app = FastAPI(
@@ -30,9 +31,36 @@ app.add_middleware(
 )
 
 # Initialize managers
-llm_manager = LLMManager()
-rag_engine = RAGEngine()
-doc_processor = DocumentProcessor()
+try:
+    llm_manager = LLMManager()
+    print("✅ LLMManager initialized successfully")
+except Exception as e:
+    print(f"❌ Error initializing LLMManager: {e}")
+    import traceback
+    traceback.print_exc()
+    # Create a dummy manager to prevent attribute errors
+    llm_manager = None
+
+try:
+    rag_engine = RAGEngine()
+    print("✅ RAGEngine initialized successfully")
+except Exception as e:
+    print(f"❌ Error initializing RAGEngine: {e}")
+    rag_engine = None
+
+try:
+    blip_processor = BLIPImageProcessor()
+    print("✅ BLIPImageProcessor initialized successfully")
+except Exception as e:
+    print(f"❌ Error initializing BLIPImageProcessor: {e}")
+    blip_processor = None
+
+try:
+    doc_processor = DocumentProcessor()
+    print("✅ DocumentProcessor initialized successfully")
+except Exception as e:
+    print(f"❌ Error initializing DocumentProcessor: {e}")
+    doc_processor = None
 
 class QueryRequest(BaseModel):
     query: str
@@ -40,6 +68,8 @@ class QueryRequest(BaseModel):
     use_rag: bool = True
     max_tokens: int = 512
     temperature: float = 0.7
+    image_base64: Optional[str] = None  # Base64 encoded image
+    image_mode: str = "vqa"  # "vqa" or "caption"
 
 class QueryResponse(BaseModel):
     answer: str
@@ -52,8 +82,14 @@ async def startup_event():
     print("🚀 Starting RAG Multi-LLM API...")
     # Auto-load default model (có thể mất 1-2 phút)
     # Nếu muốn start nhanh hơn, comment dòng dưới và load model qua UI
-    await llm_manager.load_default_model()
-    print("✅ Model loaded successfully!")
+    if llm_manager is not None:
+        try:
+            await llm_manager.load_default_model()
+            print("✅ Model loaded successfully!")
+        except Exception as e:
+            print(f"⚠️ Could not load default model: {e}")
+    else:
+        print("⚠️ LLMManager not initialized, skipping model load")
 
 @app.get("/")
 async def root():
@@ -67,8 +103,8 @@ async def root():
 async def health_check():
     return {
         "status": "healthy",
-        "model_loaded": llm_manager.is_model_loaded(),
-        "documents_count": rag_engine.get_document_count()
+        "model_loaded": llm_manager.is_model_loaded() if llm_manager else False,
+        "documents_count": rag_engine.get_document_count() if rag_engine else 0
     }
 
 @app.get("/models")
@@ -101,13 +137,16 @@ async def update_system_prompt(prompt: str = Form(...)):
         raise HTTPException(status_code=500, detail=str(e))
 
 @app.post("/models/load")
-async def load_model(model_name: str):
+async def load_model(model_name: str = Query(...)):
     """Load một model khác"""
     try:
         await llm_manager.load_model(model_name)
         return {"message": f"Model {model_name} loaded successfully"}
     except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+        import traceback
+        error_detail = f"{str(e)}\n\nTraceback:\n{traceback.format_exc()}"
+        print(f"❌ Error loading model: {error_detail}")
+        raise HTTPException(status_code=500, detail=error_detail)
 
 @app.post("/upload")
 async def upload_document(file: UploadFile = File(...)):
@@ -138,16 +177,71 @@ async def upload_document(file: UploadFile = File(...)):
         traceback.print_exc()
         raise HTTPException(status_code=500, detail=str(e))
 
+@app.post("/upload-image")
+async def upload_image(file: UploadFile = File(...)):
+    """Upload image để xử lý với BLIP"""
+    try:
+        print(f"📥 Receiving image: {file.filename}")
+        
+        # Load image
+        image_data = await file.read()
+        from PIL import Image
+        from io import BytesIO
+        image = Image.open(BytesIO(image_data)).convert('RGB')
+        
+        # Generate caption
+        caption = await blip_processor.generate_caption(image)
+        
+        # Store image in processor for later use
+        blip_processor.current_image = image
+        
+        return {
+            "message": "Image uploaded successfully",
+            "filename": file.filename,
+            "caption": caption
+        }
+    except Exception as e:
+        print(f"❌ Error uploading image: {str(e)}")
+        import traceback
+        traceback.print_exc()
+        raise HTTPException(status_code=500, detail=str(e))
+
 @app.post("/query", response_model=QueryResponse)
 async def query(request: QueryRequest):
-    """Query với RAG"""
+    """Query với RAG và BLIP (hỗ trợ text + image)"""
     try:
+        # Kiểm tra LLMManager có được khởi tạo không
+        if llm_manager is None:
+            raise HTTPException(
+                status_code=500,
+                detail="LLM Manager not initialized. Please restart the server."
+            )
+        
         # Kiểm tra model đã load chưa
         if not llm_manager.is_model_loaded():
             raise HTTPException(
                 status_code=400, 
                 detail="Model not loaded. Please load a model first via 'Load Model' button."
             )
+        
+        # Xử lý image nếu có
+        image_context = ""
+        if request.image_base64:
+            try:
+                from PIL import Image
+                image = blip_processor.decode_base64_image(request.image_base64)
+                
+                if request.image_mode == "vqa":
+                    # Visual Question Answering
+                    image_answer = await blip_processor.answer_question(image, request.query)
+                    image_context = f"\n\n[Thông tin từ hình ảnh]: {image_answer}"
+                else:
+                    # Image Captioning
+                    caption = await blip_processor.generate_caption(image, request.query if request.query else None)
+                    image_context = f"\n\n[Mô tả hình ảnh]: {caption}"
+            except Exception as e:
+                print(f"⚠️ Warning: Could not process image: {str(e)}")
+                image_context = f"\n\n[Không thể xử lý hình ảnh: {str(e)}]"
         
         # Lấy relevant documents nếu dùng RAG
         sources = []
@@ -158,10 +252,13 @@ async def query(request: QueryRequest):
             context = "\n\n".join([doc.page_content for doc in relevant_docs])
             sources = [doc.metadata.get("source", "unknown") for doc in relevant_docs]
         
+        # Kết hợp context từ RAG và image
+        full_context = context + image_context
+        
         # Generate answer
         answer = await llm_manager.generate(
             query=request.query,
-            context=context,
+            context=full_context,
             max_tokens=request.max_tokens,
             temperature=request.temperature
         )

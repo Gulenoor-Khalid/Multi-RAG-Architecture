@@ -4,6 +4,8 @@ const API_BASE_URL = 'http://localhost:8000';
 // State
 let currentModel = null;
 let isProcessing = false;
+let currentImage = null;  // Store current image base64
+let currentImageFile = null;  // Store image file name
 
 // DOM Elements
 const elements = {
@@ -29,7 +31,12 @@ const elements = {
     promptModal: document.getElementById('promptModal'),
     systemPromptInput: document.getElementById('systemPromptInput'),
     savePromptBtn: document.getElementById('savePromptBtn'),
-    cancelPromptBtn: document.getElementById('cancelPromptBtn')
+    cancelPromptBtn: document.getElementById('cancelPromptBtn'),
+    imageInput: document.getElementById('imageInput'),
+    uploadImageBtn: document.getElementById('uploadImageBtn'),
+    imagePreview: document.getElementById('imagePreview'),
+    clearImageBtn: document.getElementById('clearImageBtn'),
+    imageMode: document.getElementById('imageMode')
 };
 
 // Initialize
@@ -95,11 +102,21 @@ function setupEventListeners() {
         elements.tokensValue.textContent = e.target.value;
     });
     
-    // Load model button
-    elements.loadModelBtn.addEventListener('click', loadSelectedModel);
+    // Model select - auto load when changed
+    elements.modelSelect.addEventListener('change', loadSelectedModel);
     
     // Upload button
     elements.uploadBtn.addEventListener('click', uploadDocuments);
+    
+    // Upload image button
+    if (elements.uploadImageBtn) {
+        elements.uploadImageBtn.addEventListener('click', uploadImage);
+    }
+    
+    // Clear image button
+    if (elements.clearImageBtn) {
+        elements.clearImageBtn.addEventListener('click', clearImage);
+    }
     
     // Clear documents button
     elements.clearDocsBtn.addEventListener('click', clearDocuments);
@@ -149,8 +166,10 @@ async function loadSelectedModel() {
     const modelName = elements.modelSelect.value;
     if (!modelName) return;
     
-    elements.loadModelBtn.disabled = true;
-    elements.loadModelBtn.textContent = 'Loading...';
+    // Disable dropdown while loading
+    elements.modelSelect.disabled = true;
+    const originalText = elements.modelSelect.options[elements.modelSelect.selectedIndex].text;
+    elements.modelSelect.options[elements.modelSelect.selectedIndex].text = '⏳ Loading...';
     
     try {
         const response = await fetch(`${API_BASE_URL}/models/load?model_name=${encodeURIComponent(modelName)}`, {
@@ -160,14 +179,14 @@ async function loadSelectedModel() {
         if (!response.ok) throw new Error('Failed to load model');
         
         currentModel = modelName;
-        showStatus(elements.uploadStatus, `Model ${modelName.split('/').pop()} loaded!`, 'success');
+        showStatus(elements.uploadStatus, `✅ Model ${modelName.split('/').pop()} loaded!`, 'success');
         await updateStats();
     } catch (error) {
         console.error('Error loading model:', error);
-        showStatus(elements.uploadStatus, 'Failed to load model', 'error');
+        showStatus(elements.uploadStatus, '❌ Failed to load model', 'error');
     } finally {
-        elements.loadModelBtn.disabled = false;
-        elements.loadModelBtn.textContent = 'Load Model';
+        elements.modelSelect.disabled = false;
+        elements.modelSelect.options[elements.modelSelect.selectedIndex].text = originalText;
     }
 }
 
@@ -260,17 +279,25 @@ async function sendMessage() {
     const contentDiv = botMessageDiv.querySelector('.message-content');
     
     try {
+        const requestBody = {
+            query: query,
+            use_rag: elements.useRAG.checked,
+            max_tokens: parseInt(elements.maxTokens.value),
+            temperature: parseFloat(elements.temperature.value)
+        };
+        
+        // Add image if available
+        if (currentImage) {
+            requestBody.image_base64 = currentImage;
+            requestBody.image_mode = elements.imageMode ? elements.imageMode.value : 'vqa';
+        }
+        
         const response = await fetch(`${API_BASE_URL}/query`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({
-                query: query,
-                use_rag: elements.useRAG.checked,
-                max_tokens: parseInt(elements.maxTokens.value),
-                temperature: parseFloat(elements.temperature.value)
-            })
+            body: JSON.stringify(requestBody)
         });
         
         if (!response.ok) throw new Error('Query failed');
@@ -421,6 +448,67 @@ Mục tiêu: Giúp học sinh hiểu bài và yêu thích môn học.`
     };
     
     elements.systemPromptInput.value = templates[templateName] || templates.default;
+}
+
+// Image upload functions
+async function uploadImage() {
+    const files = elements.imageInput.files;
+    if (files.length === 0) {
+        showStatus(elements.uploadStatus, 'Vui lòng chọn hình ảnh', 'error');
+        return;
+    }
+    
+    const file = files[0];
+    
+    // Check if file is image
+    if (!file.type.startsWith('image/')) {
+        showStatus(elements.uploadStatus, 'Chỉ chấp nhận file hình ảnh', 'error');
+        return;
+    }
+    
+    // Convert to base64
+    const reader = new FileReader();
+    reader.onload = async function(e) {
+        currentImage = e.target.result;
+        currentImageFile = file.name;
+        
+        // Show preview
+        if (elements.imagePreview) {
+            elements.imagePreview.innerHTML = `
+                <img src="${currentImage}" alt="Preview" style="max-width: 100%; max-height: 200px; border-radius: 8px;">
+                <p style="margin-top: 8px; font-size: 12px; color: #666;">${file.name}</p>
+            `;
+            elements.imagePreview.style.display = 'block';
+        }
+        
+        if (elements.clearImageBtn) {
+            elements.clearImageBtn.style.display = 'block';
+        }
+        
+        showStatus(elements.uploadStatus, `✅ Đã tải hình ảnh: ${file.name}`, 'success');
+    };
+    
+    reader.readAsDataURL(file);
+}
+
+function clearImage() {
+    currentImage = null;
+    currentImageFile = null;
+    
+    if (elements.imagePreview) {
+        elements.imagePreview.innerHTML = '';
+        elements.imagePreview.style.display = 'none';
+    }
+    
+    if (elements.clearImageBtn) {
+        elements.clearImageBtn.style.display = 'none';
+    }
+    
+    if (elements.imageInput) {
+        elements.imageInput.value = '';
+    }
+    
+    showStatus(elements.uploadStatus, 'Đã xóa hình ảnh', 'success');
 }
 
 // Initialize on load
