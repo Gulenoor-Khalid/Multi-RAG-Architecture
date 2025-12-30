@@ -462,7 +462,10 @@ MIT License
     <img src="https://img.shields.io/github/issues/Kietnehi/RAG?style=for-the-badge&color=red" alt="Issues"/>
   </a>
 </p>
-
+<!-- Quote động -->
+<p align="center">
+  <img src="https://quotes-github-readme.vercel.app/api?type=horizontal&theme=dark" alt="Daily Quote"/>
+</p>
 <p align="center">
   <i>Cảm ơn bạn đã ghé thăm! Đừng quên nhấn <b>⭐️ Star</b> để ủng hộ mình nhé.</i>
 </p>
