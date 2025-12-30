@@ -417,38 +417,51 @@ MIT License
 
 ## 🔗 GitHub của tác giả
 
----
-
 <div align="center">
 
-## 👨‍💻 Thông tin Tác giả
-
-<img src="https://github.com/Kietnehi.png" width="130" height="130" style="border-radius: 50%; border: 3px solid #61dafb;" alt="Avatar Trương Phú Kiệt">
-
-<br/>
-<a href="https://github.com/Kietnehi">
-  <img src="https://readme-typing-svg.herokuapp.com?font=Fira+Code&pause=1000&color=3590F3&center=true&vCenter=true&width=435&lines=Hi,+I'm+Truong+Phu+Kiet;Student+at+Sai+Gon+University;Fullstack+Developer+%26+AI+Enthusiast" alt="Typing SVG" />
-</a>
-
-<p>
-  <img src="https://img.shields.io/badge/University-Sai_Gon_University-blue?style=for-the-badge&logo=google-scholar&logoColor=white" alt="SGU">
-  <img src="https://img.shields.io/badge/Location-Ho_Chi_Minh_City-red?style=for-the-badge&logo=google-maps&logoColor=white" alt="HCMC">
-</p>
-
-<p>
- <i>"Đam mê công nghệ, yêu thích xây dựng các ứng dụng thực tế với Docker & AI."</i>
-</p>
-<div align="center">
+<img src="https://capsule-render.vercel.app/api?type=waving&color=gradient&height=120&section=header"/>
 
 <p align="center">
   <a href="https://github.com/Kietnehi">
-    <img src="https://img.shields.io/github/followers/Kietnehi?label=Follow&style=social" alt="Follow"/>
-    <img src="https://img.shields.io/github/stars/Kietnehi/RAG?style=social" alt="Stars"/>
-    <img src="https://img.shields.io/github/forks/Kietnehi/RAG?style=social" alt="Forks"/>
-    <img src="https://img.shields.io/github/issues/Kietnehi/RAG" alt="Issues"/>
+    <img src="https://github.com/Kietnehi.png" width="140" height="140" style="border-radius: 50%; border: 4px solid #A371F7;" alt="Avatar Trương Phú Kiệt"/>
+  </a>
+</p>
+
+<h3>🚀 Trương Phú Kiệt</h3>
+
+<a href="https://github.com/Kietnehi">
+  <img src="https://readme-typing-svg.herokuapp.com?font=Fira+Code&pause=1000&color=236AD3&background=00000000&center=true&vCenter=true&width=435&lines=Student+@+Sai+Gon+University;Fullstack+Dev+%26+AI+Researcher;Building+RAG+%26+Docker+Systems" alt="Typing SVG" />
+</a>
+
+<br/><br/>
+
+<p align="center">
+  <img src="https://img.shields.io/badge/SGU-Sai_Gon_University-0056D2?style=flat-square&logo=google-scholar&logoColor=white" alt="SGU"/>
+  <img src="https://img.shields.io/badge/Base-Ho_Chi_Minh_City-FF4B4B?style=flat-square&logo=google-maps&logoColor=white" alt="HCMC"/>
+</p>
+
+<h3>🛠 Tech Stack</h3>
+<p align="center">
+  <a href="https://skillicons.dev">
+    <img src="https://skillicons.dev/icons?i=docker,python,react,nodejs,mongodb,git,fastapi,pytorch&theme=light" alt="My Skills"/>
+  </a>
+</p>
+
+<br/>
+
+<h3>🌟 Dự án: RAG Multi-LLM System</h3>
+<p align="center">
+  <a href="https://github.com/Kietnehi/RAG">
+    <img src="https://img.shields.io/github/stars/Kietnehi/RAG?style=for-the-badge&color=yellow" alt="Stars"/>
+    <img src="https://img.shields.io/github/forks/Kietnehi/RAG?style=for-the-badge&color=orange" alt="Forks"/>
+    <img src="https://img.shields.io/github/issues/Kietnehi/RAG?style=for-the-badge&color=red" alt="Issues"/>
   </a>
 </p>
 
 <p align="center">
-  Truy cập <a href="https://github.com/Kietnehi">GitHub của tôi</a> để xem các dự án khác và nhấn <b>Follow</b>!
+  <i>Cảm ơn bạn đã ghé thăm! Đừng quên nhấn <b>⭐️ Star</b> để ủng hộ mình nhé.</i>
 </p>
+
+<img src="https://capsule-render.vercel.app/api?type=waving&color=gradient&height=80&section=footer"/>
+
+</div>
