@@ -14,6 +14,11 @@
 
 ---
 
+<p align="center">
+  <img src="output.gif" width="100%" alt="Intro GIF" />
+</p>
+
+
 ## 📌 Giới thiệu dự án
 
 Dự án **RAG Multi-LLM System** được xây dựng nhằm mục tiêu:
