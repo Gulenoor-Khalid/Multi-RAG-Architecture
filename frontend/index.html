@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RAG Multi-LLM Chat</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <h1>🤖 RAG Multi-LLM Chat</h1>
+            <p>Hệ thống RAG với nhiều model LLM quantized</p>
+        </header>
+
+        <!-- Control Panel -->
+        <div class="control-panel">
+            <div class="control-group">
+                <label for="modelSelect">Model:</label>
+                <select id="modelSelect">
+                    <option value="">Loading models...</option>
+                </select>
+                <button id="loadModelBtn" class="btn-secondary">Load Model</button>
+            </div>
+
+            <div class="control-group">
+                <label>
+                    <input type="checkbox" id="useRAG" checked>
+                    Sử dụng RAG
+                </label>
+            </div>
+
+            <div class="control-group">
+                <label for="temperature">Temperature: <span id="tempValue">0.7</span></label>
+                <input type="range" id="temperature" min="0" max="1" step="0.1" value="0.7">
+            </div>
+
+            <div class="control-group">
+                <label for="maxTokens">Max Tokens: <span id="tokensValue">512</span></label>
+                <input type="range" id="maxTokens" min="128" max="2048" step="128" value="512">
+            </div>
+
+            <div class="control-group">
+                <button id="systemPromptBtn" class="btn-secondary">⚙️ System Prompt</button>
+            </div>
+        </div>
+
+        <!-- System Prompt Modal -->
+        <div id="promptModal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2>⚙️ System Prompt Configuration</h2>
+                    <span class="close">&times;</span>
+                </div>
+                <div class="modal-body">
+                    <p>Định nghĩa vai trò và hành vi của chatbot:</p>
+                    <textarea id="systemPromptInput" rows="8" placeholder="Nhập system prompt..."></textarea>
+                    
+                    <div class="prompt-templates">
+                        <h4>📋 Templates:</h4>
+                        <button class="template-btn" data-template="default">Mặc định</button>
+                        <button class="template-btn" data-template="fashion">Tư vấn Quần áo</button>
+                        <button class="template-btn" data-template="support">Chăm sóc Khách hàng</button>
+                        <button class="template-btn" data-template="teacher">Gia sư</button>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button id="savePromptBtn" class="btn-primary">Lưu</button>
+                    <button id="cancelPromptBtn" class="btn-secondary">Hủy</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Sidebar -->
+            <aside class="sidebar">
+                <h3>📁 Upload Documents</h3>
+                <div class="upload-section">
+                    <input type="file" id="fileInput" accept=".pdf,.txt,.docx" multiple>
+                    <button id="uploadBtn" class="btn-primary">Upload</button>
+                    <div id="uploadStatus" class="status-message"></div>
+                </div>
+
+                <div class="stats">
+                    <h4>📊 System Stats</h4>
+                    <div id="stats">
+                        <p>Model: <span id="currentModel">-</span></p>
+                        <p>Documents: <span id="docCount">0</span></p>
+                        <p>Status: <span id="systemStatus">-</span></p>
+                    </div>
+                </div>
+
+                <button id="clearDocsBtn" class="btn-danger">Clear All Documents</button>
+            </aside>
+
+            <!-- Chat Area -->
+            <main class="chat-container">
+                <div id="chatMessages" class="chat-messages">
+                    <div class="message bot-message">
+                        <div class="message-content">
+                            <p>👋 Xin chào! Tôi là trợ lý AI với RAG. Bạn có thể:</p>
+                            <ul>
+                                <li>Upload tài liệu (PDF, TXT, DOCX)</li>
+                                <li>Đặt câu hỏi về tài liệu đã upload</li>
+                                <li>Chuyển đổi giữa các model LLM khác nhau</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="chat-input-container">
+                    <textarea 
+                        id="chatInput" 
+                        placeholder="Nhập câu hỏi của bạn..."
+                        rows="3"
+                    ></textarea>
+                    <button id="sendBtn" class="btn-primary">
+                        <span id="sendBtnText">Gửi</span>
+                    </button>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

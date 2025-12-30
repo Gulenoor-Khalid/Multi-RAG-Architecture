@@ -1,0 +1,33 @@
+# Web & API
+fastapi
+uvicorn[standard]
+python-multipart
+
+# Pydantic & Settings
+pydantic
+pydantic-settings
+
+# LLM & ML
+transformers
+torch
+accelerate
+bitsandbytes
+sentencepiece
+protobuf
+
+# RAG & Vector DB
+langchain
+langchain-community
+chromadb
+sentence-transformers
+faiss-cpu
+
+# Document Processing
+pypdf
+python-docx
+openpyxl
+docx2txt
+
+# Utilities
+python-dotenv
+aiofiles

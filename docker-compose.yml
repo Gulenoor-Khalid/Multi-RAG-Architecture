@@ -1,0 +1,60 @@
+version: '3.8'
+
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: rag-backend
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./uploads:/app/uploads
+      - ./vector_db:/app/vector_db
+      - huggingface-cache:/root/.cache/huggingface
+    environment:
+      - API_HOST=0.0.0.0
+      - API_PORT=8000
+      - MODEL_NAME=TinyLlama/TinyLlama-1.1B-Chat-v1.0
+      - LOAD_IN_8BIT=false
+      - LOAD_IN_4BIT=true
+      - MAX_NEW_TOKENS=512
+      - TEMPERATURE=0.7
+      - EMBEDDING_MODEL=sentence-transformers/all-MiniLM-L6-v2
+      - VECTOR_DB_PATH=/app/vector_db
+      - UPLOAD_DIR=/app/uploads
+      - ANONYMIZED_TELEMETRY=False
+      - CHROMA_TELEMETRY=False
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile.frontend
+    container_name: rag-frontend
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+    restart: unless-stopped
+
+volumes:
+  huggingface-cache:
+    driver: local
+
+networks:
+  default:
+    name: rag-network
