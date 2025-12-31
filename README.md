@@ -126,7 +126,7 @@ Giao diện chat RAG: upload tài liệu, chọn mô hình, streaming câu trả
 ### ✨ Gemini API với Google Search Tool
 
 <p align="center">
-  <img src="demo_app.png" width="90%" alt="Demo Gemini API with Google Search">
+  <img src="image/demo_app.png" width="90%" alt="Demo Gemini API with Google Search">
 </p>
 
 <sub align="center">
