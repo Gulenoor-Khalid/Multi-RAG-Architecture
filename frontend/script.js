@@ -36,7 +36,14 @@ const elements = {
     uploadImageBtn: document.getElementById('uploadImageBtn'),
     imagePreview: document.getElementById('imagePreview'),
     clearImageBtn: document.getElementById('clearImageBtn'),
-    imageMode: document.getElementById('imageMode')
+    imageMode: document.getElementById('imageMode'),
+    // Gemini elements
+    queryMode: document.getElementById('queryMode'),
+    ragSettings: document.getElementById('ragSettings'),
+    geminiSettings: document.getElementById('geminiSettings'),
+    geminiApiKey: document.getElementById('geminiApiKey'),
+    useGrounding: document.getElementById('useGrounding'),
+    geminiModel: document.getElementById('geminiModel')
 };
 
 // Initialize
@@ -92,6 +99,11 @@ async function updateStats() {
 
 // Setup event listeners
 function setupEventListeners() {
+    // Query mode toggle
+    if (elements.queryMode) {
+        elements.queryMode.addEventListener('change', toggleQueryMode);
+    }
+    
     // Temperature slider
     elements.temperature.addEventListener('input', (e) => {
         elements.tempValue.textContent = e.target.value;
@@ -159,6 +171,21 @@ function setupEventListeners() {
             sendMessage();
         }
     });
+}
+
+// Toggle between RAG and Gemini mode
+function toggleQueryMode() {
+    const mode = elements.queryMode.value;
+    
+    if (mode === 'gemini') {
+        // Show Gemini settings, hide RAG settings
+        if (elements.geminiSettings) elements.geminiSettings.style.display = 'block';
+        if (elements.ragSettings) elements.ragSettings.style.display = 'none';
+    } else {
+        // Show RAG settings, hide Gemini settings
+        if (elements.ragSettings) elements.ragSettings.style.display = 'block';
+        if (elements.geminiSettings) elements.geminiSettings.style.display = 'none';
+    }
 }
 
 // Load selected model
@@ -265,6 +292,18 @@ async function sendMessage() {
     const query = elements.chatInput.value.trim();
     if (!query || isProcessing) return;
     
+    // Check query mode
+    const mode = elements.queryMode ? elements.queryMode.value : 'rag';
+    
+    // Validate Gemini API key if in Gemini mode
+    if (mode === 'gemini') {
+        const apiKey = elements.geminiApiKey ? elements.geminiApiKey.value.trim() : '';
+        if (!apiKey) {
+            alert('⚠️ Vui lòng nhập Gemini API Key!');
+            return;
+        }
+    }
+    
     // Add user message
     addMessage(query, 'user');
     elements.chatInput.value = '';
@@ -279,46 +318,14 @@ async function sendMessage() {
     const contentDiv = botMessageDiv.querySelector('.message-content');
     
     try {
-        const requestBody = {
-            query: query,
-            use_rag: elements.useRAG.checked,
-            max_tokens: parseInt(elements.maxTokens.value),
-            temperature: parseFloat(elements.temperature.value)
-        };
-        
-        // Add image if available
-        if (currentImage) {
-            requestBody.image_base64 = currentImage;
-            requestBody.image_mode = elements.imageMode ? elements.imageMode.value : 'vqa';
+        if (mode === 'gemini') {
+            await sendGeminiQuery(query, contentDiv);
+        } else {
+            await sendRAGQuery(query, contentDiv);
         }
-        
-        const response = await fetch(`${API_BASE_URL}/query`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(requestBody)
-        });
-        
-        if (!response.ok) throw new Error('Query failed');
-        
-        const data = await response.json();
-        
-        // Update bot message
-        contentDiv.innerHTML = `<p>${formatText(data.answer)}</p>`;
-        
-        // Add sources if available
-        if (data.sources && data.sources.length > 0) {
-            const sourcesDiv = document.createElement('div');
-            sourcesDiv.className = 'sources';
-            sourcesDiv.innerHTML = '<strong>📚 Sources:</strong> ' + 
-                data.sources.map(s => `<em>${s}</em>`).join(', ');
-            contentDiv.appendChild(sourcesDiv);
-        }
-        
     } catch (error) {
         console.error('Error sending message:', error);
-        contentDiv.innerHTML = '<p style="color: var(--danger-color);">❌ Error: Failed to get response</p>';
+        contentDiv.innerHTML = '<p style="color: var(--danger-color);">❌ Error: ' + error.message + '</p>';
     } finally {
         isProcessing = false;
         elements.sendBtn.disabled = false;
@@ -327,6 +334,85 @@ async function sendMessage() {
         // Scroll to bottom
         elements.chatMessages.scrollTop = elements.chatMessages.scrollHeight;
     }
+}
+
+// Send RAG query (original logic)
+async function sendRAGQuery(query, contentDiv) {
+    const requestBody = {
+        query: query,
+        use_rag: elements.useRAG.checked,
+        max_tokens: parseInt(elements.maxTokens.value),
+        temperature: parseFloat(elements.temperature.value)
+    };
+    
+    // Add image if available
+    if (currentImage) {
+        requestBody.image_base64 = currentImage;
+        requestBody.image_mode = elements.imageMode ? elements.imageMode.value : 'vqa';
+    }
+    
+    const response = await fetch(`${API_BASE_URL}/query`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(requestBody)
+    });
+    
+    if (!response.ok) throw new Error('Query failed');
+    
+    const data = await response.json();
+    
+    // Update bot message
+    contentDiv.innerHTML = `<p>${formatText(data.answer)}</p>`;
+    
+    // Add sources if available
+    if (data.sources && data.sources.length > 0) {
+        const sourcesDiv = document.createElement('div');
+        sourcesDiv.className = 'sources';
+        sourcesDiv.innerHTML = '<strong>📚 Sources:</strong> ' + 
+            data.sources.map(s => `<em>${s}</em>`).join(', ');
+        contentDiv.appendChild(sourcesDiv);
+    }
+}
+
+// Send Gemini query
+async function sendGeminiQuery(query, contentDiv) {
+    const requestBody = {
+        query: query,
+        api_key: elements.geminiApiKey.value.trim(),
+        use_grounding: elements.useGrounding ? elements.useGrounding.checked : true,
+        model: elements.geminiModel ? elements.geminiModel.value : 'gemini-2.0-flash-exp',
+        max_tokens: parseInt(elements.maxTokens.value),
+        temperature: parseFloat(elements.temperature.value)
+    };
+    
+    const response = await fetch(`${API_BASE_URL}/query/gemini`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(requestBody)
+    });
+    
+    if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.detail || 'Gemini query failed');
+    }
+    
+    const data = await response.json();
+    
+    // Update bot message
+    let html = `<p>${formatText(data.answer)}</p>`;
+    
+    // Add info about grounding
+    if (data.grounding_enabled) {
+        html += '<div class="sources" style="margin-top: 10px; font-size: 12px; color: #666;">';
+        html += '✨ Powered by Gemini with Google Search';
+        html += '</div>';
+    }
+    
+    contentDiv.innerHTML = html;
 }
 
 // Add message to chat

@@ -17,19 +17,59 @@
         <!-- Control Panel -->
         <div class="control-panel">
             <div class="control-group">
-                <label for="modelSelect">Model:</label>
-                <select id="modelSelect">
-                    <option value="">Loading models...</option>
+                <label for="queryMode">Mode:</label>
+                <select id="queryMode">
+                    <option value="rag">🤖 RAG Mode (Local LLM)</option>
+                    <option value="gemini">✨ Gemini API (Google Search)</option>
                 </select>
             </div>
 
-            <div class="control-group">
-                <label>
-                    <input type="checkbox" id="useRAG" checked>
-                    Sử dụng RAG
-                </label>
+            <!-- RAG Mode Settings -->
+            <div id="ragSettings" class="mode-settings">
+                <div class="control-group">
+                    <label for="modelSelect">Model:</label>
+                    <select id="modelSelect">
+                        <option value="">Loading models...</option>
+                    </select>
+                </div>
+
+                <div class="control-group">
+                    <label>
+                        <input type="checkbox" id="useRAG" checked>
+                        Sử dụng RAG
+                    </label>
+                </div>
+
+                <div class="control-group">
+                    <button id="systemPromptBtn" class="btn-secondary">⚙️ System Prompt</button>
+                </div>
             </div>
 
+            <!-- Gemini Mode Settings -->
+            <div id="geminiSettings" class="mode-settings" style="display: none;">
+                <div class="control-group">
+                    <label for="geminiApiKey">Gemini API Key:</label>
+                    <input type="password" id="geminiApiKey" placeholder="Nhập API key của bạn..." style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;">
+                </div>
+
+                <div class="control-group">
+                    <label>
+                        <input type="checkbox" id="useGrounding" checked>
+                        Sử dụng Google Search
+                    </label>
+                </div>
+
+                <div class="control-group">
+                    <label for="geminiModel">Gemini Model:</label>
+                    <select id="geminiModel">
+                        <option value="gemini-2.0-flash-exp">Gemini 2.0 Flash</option>
+                        <option value="gemini-2.5-flash">Gemini 2.5 Flash</option>
+                        <option value="gemini-1.5-pro">Gemini 1.5 Pro</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Common Settings -->
             <div class="control-group">
                 <label for="temperature">Temperature: <span id="tempValue">0.7</span></label>
                 <input type="range" id="temperature" min="0" max="1" step="0.1" value="0.7">
@@ -38,10 +78,6 @@
             <div class="control-group">
                 <label for="maxTokens">Max Tokens: <span id="tokensValue">512</span></label>
                 <input type="range" id="maxTokens" min="128" max="2048" step="128" value="512">
-            </div>
-
-            <div class="control-group">
-                <button id="systemPromptBtn" class="btn-secondary">⚙️ System Prompt</button>
             </div>
         </div>
 
@@ -116,12 +152,12 @@
                 <div id="chatMessages" class="chat-messages">
                     <div class="message bot-message">
                         <div class="message-content">
-                            <p>👋 Xin chào! Tôi là trợ lý AI với RAG. Bạn có thể:</p>
+                            <p>👋 Xin chào! Tôi là trợ lý AI với nhiều chế độ:</p>
                             <ul>
-                                <li>Upload tài liệu (PDF, TXT, DOCX)</li>
-                                <li>Đặt câu hỏi về tài liệu đã upload</li>
-                                <li>Chuyển đổi giữa các model LLM khác nhau</li>
+                                <li><strong>🤖 RAG Mode:</strong> Sử dụng LLM local với tài liệu đã upload</li>
+                                <li><strong>✨ Gemini API:</strong> Tìm kiếm thông tin realtime với Google Search</li>
                             </ul>
+                            <p>Chọn mode phù hợp và bắt đầu chat!</p>
                         </div>
                     </div>
                 </div>
