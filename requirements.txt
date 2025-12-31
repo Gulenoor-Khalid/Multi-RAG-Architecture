@@ -13,6 +13,7 @@ torch==2.5.1
 accelerate==1.12.0
 bitsandbytes==0.49.0
 protobuf==6.33.2
+google-genai>=1.0.0  # Gemini API with Google Search grounding
 
 # Image Processing (BLIP)
 pillow

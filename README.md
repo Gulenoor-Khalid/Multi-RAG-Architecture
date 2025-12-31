@@ -111,7 +111,7 @@ Image cho Backend FastAPI + LLM + RAG Engine
 Giao diện chat RAG: upload tài liệu, chọn mô hình, streaming câu trả lời
 </sub>
 
-**Demo Run**
+**Demo Run - RAG Mode**
 
 <p align="center">
   <img src="image/demo_run_rag.png" width="90%" alt="Demo Run RAG">
@@ -120,6 +120,25 @@ Giao diện chat RAG: upload tài liệu, chọn mô hình, streaming câu trả
 <sub align="center">
 Ảnh minh họa quá trình chạy RAG (upload tài liệu và phản hồi từ model).
 </sub>
+
+---
+
+### ✨ Gemini API với Google Search Tool
+
+<p align="center">
+  <img src="demo_app.png" width="90%" alt="Demo Gemini API with Google Search">
+</p>
+
+<sub align="center">
+🔥 Tính năng mới: Sử dụng Gemini API với Google Search để tìm kiếm thông tin real-time từ web
+</sub>
+
+**Tính năng nổi bật:**
+- 🌐 **Real-time Information**: Truy vấn thông tin cập nhật nhất từ Google Search
+- 🔍 **Google Search Grounding**: Gemini tự động tìm kiếm và tổng hợp thông tin từ nhiều nguồn
+- 🎯 **Accurate & Updated**: Câu trả lời chính xác dựa trên dữ liệu mới nhất
+- 🔐 **Secure API Key**: Người dùng tự quản lý API key của mình
+- ⚡ **Fast Response**: Phản hồi nhanh chóng từ Gemini models
 
 ---
 
@@ -136,6 +155,13 @@ Giao diện chat RAG: upload tài liệu, chọn mô hình, streaming câu trả
   - ChromaDB cho vector storage
   - Sentence transformers cho embeddings
   - Hỗ trợ PDF, DOCX, TXT
+
+- ✨ **Gemini API với Google Search (NEW!)**
+  - **Real-time Search**: Tìm kiếm thông tin cập nhật từ Google
+  - **Google Search Grounding**: Tự động tìm kiếm và trích xuất thông tin từ web
+  - **Dual Mode**: Chuyển đổi linh hoạt giữa RAG local và Gemini API
+  - **Multiple Models**: Hỗ trợ Gemini 2.0 Flash, Gemini 2.5 Flash, Gemini 1.5 Pro
+  - **User API Key**: Người dùng tự nhập API key, bảo mật và linh hoạt
 
 - 🖼️ **BLIP - Vision AI cho xử lý hình ảnh**
   - **Visual Question Answering (VQA)**: Trả lời câu hỏi dựa trên nội dung hình ảnh
@@ -236,14 +262,39 @@ python -m http.server 3000
 
 ## 🎮 Sử dụng
 
-### 1. Upload Documents
+### 1. Chọn Query Mode
+
+#### 🤖 RAG Mode (Local LLM)
+- Sử dụng LLM models local với tài liệu đã upload
+- Phù hợp cho queries về tài liệu riêng tư
+- Không cần API key, hoàn toàn offline
+
+#### ✨ Gemini API Mode (Google Search)
+- Tìm kiếm thông tin real-time từ Google
+- Trả lời các câu hỏi về sự kiện mới nhất
+- **Yêu cầu**: Gemini API Key (lấy miễn phí tại [Google AI Studio](https://aistudio.google.com/apikey))
+
+**Cách sử dụng Gemini API:**
+1. Chọn **Mode**: "✨ Gemini API (Google Search)"
+2. Nhập **Gemini API Key** vào ô input
+3. Bật/tắt **"Sử dụng Google Search"** (khuyến nghị: bật)
+4. Chọn **Model**: Gemini 2.0 Flash (khuyến nghị) / Gemini 2.5 Flash / Gemini 1.5 Pro
+5. Nhập câu hỏi và nhận kết quả từ Google Search!
+
+**Ví dụ câu hỏi phù hợp với Gemini API:**
+- "Ai vô địch Euro 2024?"
+- "Giá Bitcoin hôm nay?"
+- "Tin tức công nghệ AI mới nhất?"
+- "Thời tiết Hà Nội hôm nay?"
+
+### 2. Upload Documents (RAG Mode)
 
 1. Click vào **"📁 Upload Documents"** trong sidebar
 2. Chọn file (PDF, DOCX, TXT)
 3. Click **Upload**
 4. Documents sẽ được xử lý và lưu vào vector database
 
-### 2. Upload và xử lý hình ảnh với BLIP
+### 3. Upload và xử lý hình ảnh với BLIP
 
 1. Click vào **"🖼️ Upload Image"** trong sidebar
 2. Chọn hình ảnh (JPG, PNG)
@@ -253,21 +304,28 @@ python -m http.server 3000
 4. Nhập câu hỏi về hình ảnh (nếu chọn VQA)
 5. Hệ thống sẽ phân tích và trả lời dựa trên hình ảnh
 
-### 3. Chat với RAG
+### 4. Chat với RAG hoặc Gemini
 
+**RAG Mode:**
 1. Nhập câu hỏi vào chat input
 2. Bật **"Sử dụng RAG"** để query từ documents
 3. Tắt RAG để chat trực tiếp với LLM
 4. Kết hợp với hình ảnh đã upload để có câu trả lời đầy đủ hơn
 5. Click **Gửi** hoặc nhấn Enter
 
-### 4. Switch Models
+**Gemini Mode:**
+1. Đảm bảo đã nhập API key
+2. Nhập câu hỏi (có thể về thông tin real-time)
+3. Click **Gửi** - Gemini sẽ tự động search Google và trả lời
+4. Kết quả sẽ hiển thị với badge "✨ Powered by Gemini with Google Search"
+
+### 5. Switch Models (RAG Mode)
 
 1. Chọn model từ dropdown **"Model"**
 2. Click **"Load Model"**
 3. Đợi model load (có thể mất 1-2 phút)
 
-### 5. Điều chỉnh Parameters
+### 6. Điều chỉnh Parameters
 
 - **Temperature**: 0-1 (creativity)
 - **Max Tokens**: 128-2048 (response length)
@@ -376,6 +434,44 @@ Content-Type: application/json
 DELETE /documents
 ```
 
+### Query với Gemini API
+
+```bash
+POST /query/gemini
+Content-Type: application/json
+
+{
+  "query": "Who won Euro 2024?",
+  "api_key": "your-gemini-api-key",
+  "use_grounding": true,
+  "model": "gemini-2.0-flash-exp",
+  "max_tokens": 512,
+  "temperature": 0.7
+}
+```
+
+### Query với Gemini API (Streaming)
+
+```bash
+POST /query/gemini/stream
+Content-Type: application/json
+
+{
+  "query": "Latest AI news",
+  "api_key": "your-gemini-api-key",
+  "use_grounding": true,
+  "model": "gemini-2.0-flash-exp",
+  "max_tokens": 512,
+  "temperature": 0.7
+}
+```
+
+**Lấy Gemini API Key miễn phí:**
+- Truy cập: https://aistudio.google.com/apikey
+- Đăng nhập với Google account
+- Tạo API key mới
+- Copy và sử dụng trong ứng dụng
+
 ## 🐛 Troubleshooting
 
 ### Model không load được
@@ -447,6 +543,8 @@ MIT License
 - bitsandbytes (quantization)  
 - BLIP (Salesforce) - Vision AI  
 - Pillow - Image processing  
+- **Google Gemini API** - Real-time search với Google Search grounding  
+- **Google AI Studio** - API key management  
 
 > **Lưu ý**: Project dùng cho **educational purposes**. Một số models yêu cầu token từ HuggingFace hoặc tuân thủ license riêng.
 ---

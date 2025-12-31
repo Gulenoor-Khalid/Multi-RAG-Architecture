@@ -13,6 +13,7 @@ from pathlib import Path
 from .models.llm_manager import LLMManager
 from .models.rag_engine import RAGEngine
 from .models.blip_processor import BLIPImageProcessor
+from .models.gemini_manager import GeminiManager
 from .utils.document_processor import DocumentProcessor
 
 app = FastAPI(
@@ -62,6 +63,9 @@ except Exception as e:
     print(f"❌ Error initializing DocumentProcessor: {e}")
     doc_processor = None
 
+# GeminiManager sẽ được khởi tạo khi người dùng cung cấp API key
+gemini_manager = None
+
 class QueryRequest(BaseModel):
     query: str
     model_name: Optional[str] = None
@@ -70,6 +74,14 @@ class QueryRequest(BaseModel):
     temperature: float = 0.7
     image_base64: Optional[str] = None  # Base64 encoded image
     image_mode: str = "vqa"  # "vqa" or "caption"
+
+class GeminiQueryRequest(BaseModel):
+    query: str
+    api_key: str
+    use_grounding: bool = True
+    model: str = "gemini-2.0-flash-exp"
+    max_tokens: int = 512
+    temperature: float = 0.7
 
 class QueryResponse(BaseModel):
     answer: str
@@ -324,6 +336,77 @@ async def clear_documents():
         rag_engine.clear()
         return {"message": "All documents cleared successfully"}
     except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.post("/query/gemini")
+async def query_gemini(request: GeminiQueryRequest):
+    """Query sử dụng Gemini API với Google Search grounding"""
+    global gemini_manager
+    
+    try:
+        # Khởi tạo hoặc cập nhật GeminiManager với API key mới
+        if gemini_manager is None:
+            gemini_manager = GeminiManager(api_key=request.api_key)
+        else:
+            gemini_manager.set_api_key(request.api_key)
+        
+        # Generate response từ Gemini
+        answer = await gemini_manager.generate(
+            query=request.query,
+            use_grounding=request.use_grounding,
+            model=request.model,
+            temperature=request.temperature,
+            max_tokens=request.max_tokens
+        )
+        
+        return {
+            "answer": answer,
+            "model_used": request.model,
+            "grounding_enabled": request.use_grounding
+        }
+        
+    except Exception as e:
+        print(f"❌ Error in Gemini query: {str(e)}")
+        import traceback
+        traceback.print_exc()
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.post("/query/gemini/stream")
+async def query_gemini_stream(request: GeminiQueryRequest):
+    """Query sử dụng Gemini API với streaming response"""
+    global gemini_manager
+    
+    try:
+        # Khởi tạo hoặc cập nhật GeminiManager với API key mới
+        if gemini_manager is None:
+            gemini_manager = GeminiManager(api_key=request.api_key)
+        else:
+            gemini_manager.set_api_key(request.api_key)
+        
+        async def generate_stream():
+            try:
+                async for chunk in gemini_manager.generate_stream(
+                    query=request.query,
+                    use_grounding=request.use_grounding,
+                    model=request.model,
+                    temperature=request.temperature,
+                    max_tokens=request.max_tokens
+                ):
+                    yield f"data: {json.dumps({'text': chunk})}\n\n"
+                
+                yield "data: [DONE]\n\n"
+            except Exception as e:
+                yield f"data: {json.dumps({'error': str(e)})}\n\n"
+        
+        return StreamingResponse(
+            generate_stream(),
+            media_type="text/event-stream"
+        )
+        
+    except Exception as e:
+        print(f"❌ Error in Gemini stream: {str(e)}")
+        import traceback
+        traceback.print_exc()
         raise HTTPException(status_code=500, detail=str(e))
 
 if __name__ == "__main__":
