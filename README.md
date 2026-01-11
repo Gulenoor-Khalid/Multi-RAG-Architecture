@@ -1,11 +1,49 @@
-# 🤖 RAG Multi-LLM System (Quantized 8B Models)
+<div align="center">
 
-![GitHub Repo stars](https://img.shields.io/github/stars/Kietnehi/RAG?style=social)
-![GitHub forks](https://img.shields.io/github/forks/Kietnehi/RAG?style=social)
-![GitHub issues](https://img.shields.io/github/issues/Kietnehi/RAG)
-![GitHub license](https://img.shields.io/github/license/Kietnehi/RAG)
-![Docker](https://img.shields.io/badge/Docker-Supported-blue)
-![Python](https://img.shields.io/badge/Python-3.9%2B-brightgreen)
+# 🤖 RAG Multi-LLM System (Quantized 8B Models)
+**Hệ thống RAG đa mô hình với khả năng truy xuất tri thức và tìm kiếm Web thời gian thực.**
+
+<p align="center">
+  <img src="image/pipeline.jpg" alt="RAG Pipeline" width="800"/>
+</p>
+
+<p align="center"><i>Overall pipeline of the RAG Multi-LLM System</i></p>
+
+
+![GitHub repo size](https://img.shields.io/github/repo-size/Kietnehi/RAG?style=for-the-badge&color=blueviolet)
+![GitHub last commit](https://img.shields.io/github/last-commit/Kietnehi/RAG?style=for-the-badge&color=brightgreen)
+![GitHub license](https://img.shields.io/github/license/Kietnehi/RAG?style=for-the-badge&color=blue)
+![GitHub issues](https://img.shields.io/github/issues/Kietnehi/RAG?style=for-the-badge&color=red)
+
+---
+
+### 🚀 Core Framework & Backend
+![Python](https://img.shields.io/badge/Python_3.9+-3776AB?style=for-the-badge&logo=python&logoColor=white)
+![FastAPI](https://img.shields.io/badge/FastAPI-009688?style=for-the-badge&logo=fastapi&logoColor=white)
+![LangChain](https://img.shields.io/badge/LangChain-1C3C3C?style=for-the-badge&logo=langchain&logoColor=white)
+![PyTorch](https://img.shields.io/badge/PyTorch-EE4C2C?style=for-the-badge&logo=pytorch&logoColor=white)
+![Nginx](https://img.shields.io/badge/Nginx-009639?style=for-the-badge&logo=nginx&logoColor=white)
+
+### 🧠 LLM & Vision Intelligence
+![Google Gemini](https://img.shields.io/badge/Gemini_2.0_Flash-4285F4?style=for-the-badge&logo=googlegemini&logoColor=white)
+![Meta Llama](https://img.shields.io/badge/Llama_2_8B-0467DF?style=for-the-badge&logo=meta&logoColor=white)
+![Mistral AI](https://img.shields.io/badge/Mistral_7B-000000?style=for-the-badge)
+![Microsoft Phi](https://img.shields.io/badge/Microsoft_Phi-0078D4?style=for-the-badge&logo=microsoft&logoColor=white)
+![HuggingFace](https://img.shields.io/badge/%F0%9F%A4%97%20Hugging%20Face-FFD21E?style=for-the-badge&color=gray)
+
+### 📚 RAG & Data Infrastructure
+![ChromaDB](https://img.shields.io/badge/Vector_DB-ChromaDB-3178C6?style=for-the-badge)
+![Google Search](https://img.shields.io/badge/Google_Search-Grounding-4285F4?style=for-the-badge&logo=google&logoColor=white)
+![Vision AI](https://img.shields.io/badge/Vision_AI-BLIP-orange?style=for-the-badge)
+![Quantization](https://img.shields.io/badge/Quantization-4bit/8bit-green?style=for-the-badge)
+
+### 🐳 Deployment & DevOps
+![Docker](https://img.shields.io/badge/Docker_Compose-2496ED?style=for-the-badge&logo=docker&logoColor=white)
+![GPU](https://img.shields.io/badge/NVIDIA_GPU-Supported-76B900?style=for-the-badge&logo=nvidia&logoColor=white)
+![Ubuntu](https://img.shields.io/badge/Ubuntu-E94333?style=for-the-badge&logo=ubuntu&logoColor=white)
+
+---
+</div>
 
 > 🚀 **RAG Multi-LLM System** là một hệ thống **Retrieval-Augmented Generation (RAG)** hoàn chỉnh, hỗ trợ **nhiều mô hình LLM quantized (4-bit / 8-bit)**, có giao diện web, vector database và triển khai dễ dàng bằng Docker.
 
