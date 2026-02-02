@@ -1,3 +1,9 @@
+
+
+
+
+
+
 # Web & API
 fastapi==0.104.1
 uvicorn==0.24.0
@@ -19,7 +25,7 @@ google-genai>=1.0.0  # Gemini API with Google Search grounding
 pillow
 
 # RAG & Vector DB
-langchain==1.2.0
+langchain==0.3.20
 langchain-community==0.3.14
 chromadb==1.4.0
 sentence-transformers==5.2.0
@@ -34,6 +40,5 @@ docx2txt==0.9
 python-dotenv==1.0.1
 aiofiles==25.1.0
 
-# Additional dependencies for stability
 typing-extensions>=4.9.0
 numpy==1.24.3
